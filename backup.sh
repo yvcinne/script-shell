@@ -1,28 +1,26 @@
 #!/bin/bash
 
-# sauvegarde.sh - Sauvegarde des fichiers du repertoire courant vers OLD/
-# Chaque fichier est copie avec la date du jour ajoutee a son nom : fichier#YYYY-MM-DD
+
 
 DATE=$(date +"%Y-%m-%d")
 REPERTOIRE_OLD="OLD"
 
-# Creer le repertoire OLD s'il n'existe pas
+# Créer le répertoire OLD s'il n'existe pas
 if [ ! -d "$REPERTOIRE_OLD" ]; then
     mkdir "$REPERTOIRE_OLD"
     if [ $? -ne 0 ]; then
-        echo "Erreur : impossible de creer le repertoire $REPERTOIRE_OLD."
+        echo "Erreur : impossible de créer le répertoire $REPERTOIRE_OLD."
         exit 1
     fi
-    echo "Repertoire $REPERTOIRE_OLD cree."
+    echo "Répertoire $REPERTOIRE_OLD créé."
 else
-    echo "Repertoire $REPERTOIRE_OLD existe deja."
+    echo "Répertoire $REPERTOIRE_OLD existe déjà."
 fi
 
-# Copier chaque fichier (pas les dossiers) du repertoire courant vers OLD
+# Copier chaque fichier (pas les dossiers) du répertoire courant vers OLD
 nb=0
 for fichier in *; do
-    # Ignorer les dossiers et le script lui-meme
-    if [ -f "$fichier" ] && [ "$fichier" != "sauvegarde.sh" ]; then
+    if [ -f "$fichier" ] && [ "$fichier" != "backup.sh" ]; then
         cp "$fichier" "$REPERTOIRE_OLD/$fichier#$DATE"
         echo "$fichier  -->  $REPERTOIRE_OLD/$fichier#$DATE"
         nb=$((nb + 1))
@@ -30,4 +28,4 @@ for fichier in *; do
 done
 
 echo "-----------------------------------"
-echo "Sauvegarde terminee : $nb fichier(s) copie(s)."
+echo "Sauvegarde terminée : $nb fichier(s) copié(s)."
