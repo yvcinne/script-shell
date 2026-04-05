@@ -1,16 +1,15 @@
 #!/bin/bash
 
 
-while true; do 
 
-	read -p "Saisir un note (ou q pour quitter) :" note
-	if [ "$note" == "q" ]; then 
+while true; do
+	read -p "Saisir une note (ou q pour quitter) :" note
+	if [ "$note" == "q" ]; then
 		echo "Au revoir"
 		break
 	fi
 
-	
-
+	# Barème : 16-20 Très bien, 14-15 Bien, 12-13 Assez bien, 10-11 Moyen, 0-9 Insuffisant
 	if [[ "$note" -ge 16 && "$note" -le 20 ]]; then
         echo "Très bien"
     elif [[ "$note" -ge 14 && "$note" -lt 16 ]]; then
