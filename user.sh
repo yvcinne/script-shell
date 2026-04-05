@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# ---------- Fonction 1 : lister les utilisateurs avec UID > 1000 ----------
+
+
+# lister les utilisateurs avec UID > 1000 
 lister_utilisateurs() {
     echo "Utilisateurs avec UID > 1000 :"
     echo "--------------------------------"
@@ -11,11 +13,10 @@ lister_utilisateurs() {
     done < /etc/passwd
 }
 
-# ---------- Fonction 2 : verifier l'existence d'un utilisateur ----------
+# vérifier l'existence d'un utilisateur
 verifier_utilisateur() {
     read -p "Entrez un login ou un UID : " saisie
 
-    # Verifier si la saisie est un nombre (UID) ou un nom (login)
     if echo "$saisie" | grep -qE '^[0-9]+$'; then
         ligne=$(grep -E "^[^:]*:[^:]*:$saisie:" /etc/passwd)
     else
@@ -23,7 +24,7 @@ verifier_utilisateur() {
     fi
 
     if [ -n "$ligne" ]; then
-        echo "Utilisateur trouve. Informations :"
+        echo "Utilisateur trouvé. Informations :"
         echo "-----------------------------------"
         IFS=: read -r login _ uid gid commentaire home shell <<< "$ligne"
         echo "Login      : $login"
@@ -37,52 +38,53 @@ verifier_utilisateur() {
     fi
 }
 
-# ---------- Fonction 3 : creer un utilisateur ----------
+#créer un utilisateur 
 creer_utilisateur() {
-    # Verifier que le script est execute par root
+    # Vérifier que le script est exécuté par root
     if [ "$(id -u)" -ne 0 ]; then
-        echo "Erreur : vous devez etre root pour creer un utilisateur."
+        echo "Erreur : vous devez être root pour créer un utilisateur."
         return 1
     fi
 
     read -p "Entrez le login du nouvel utilisateur : " login
 
-    # Verifier que le login n'est pas vide
+    # Vérifier que le login n'est pas vide
     if [ -z "$login" ]; then
-        echo "Erreur : le login ne peut pas etre vide."
+        echo "Erreur : le login ne peut pas être vide."
         return 1
     fi
 
-    # Verifier si l'utilisateur existe deja
+    # Vérifier si l'utilisateur existe déjà
     if grep -qE "^$login:" /etc/passwd; then
-        echo "Erreur : l'utilisateur '$login' existe deja."
+        echo "Erreur : l'utilisateur '$login' existe déjà."
         return 1
     fi
 
-    # Verifier si le repertoire home existe deja
+    # Vérifier si le répertoire home existe déjà
     if [ -d "/home/$login" ]; then
-        echo "Erreur : le repertoire /home/$login existe deja."
+        echo "Erreur : le répertoire /home/$login existe déjà."
         return 1
     fi
 
-    # Creer l'utilisateur avec son repertoire personnel
+    # Créer l'utilisateur avec son répertoire personnel
     useradd -m -d "/home/$login" "$login"
 
     if [ $? -eq 0 ]; then
-        echo "Utilisateur '$login' cree avec succes."
-        echo "Repertoire personnel : /home/$login"
+        echo "Utilisateur '$login' créé avec succès."
+        echo "Répertoire personnel : /home/$login"
     else
-        echo "Erreur lors de la creation de l'utilisateur."
+        echo "Erreur lors de la création de l'utilisateur."
     fi
 }
 
-# ---------- Menu principal ----------
+
+# Menu principal
 while true; do
     echo ""
     echo "===== Gestion des utilisateurs ====="
     echo "1. Lister les utilisateurs (UID > 1000)"
-    echo "2. Verifier l'existence d'un utilisateur"
-    echo "3. Creer un utilisateur"
+    echo "2. Vérifier l'existence d'un utilisateur"
+    echo "3. Créer un utilisateur"
     echo "4. Quitter"
     echo "====================================="
     read -p "Votre choix : " choix
